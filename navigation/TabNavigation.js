@@ -2,7 +2,9 @@ import React from "react";
 import {
   createBottomTabNavigator
 } from "react-navigation-tabs";
-import { createStackNavigator } from "react-navigation-stack";
+import {
+  createStackNavigator
+} from "react-navigation-stack"
 import Home from "../screens/Tabs/Home";
 import Search from "../screens/Tabs/Search";
 import Notifications from "../screens/Tabs/Notifications";
@@ -22,7 +24,7 @@ export default createBottomTabNavigator({
   Home: {
     screen: stackFactory(Home, {
       title: "Home",
-      headerRight: <MessagesLink/>
+      headerRight: <MessagesLink />
     })
   },
   Search: {
