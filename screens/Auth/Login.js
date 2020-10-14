@@ -11,6 +11,6 @@ const Text = styled.Text``;
 
 export default () => (
   <View>
-    <Text>Log In</Text>
+    <Text>Log In!!</Text>
   </View>
 );
