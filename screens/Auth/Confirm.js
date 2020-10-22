@@ -20,7 +20,6 @@ export default ({navigation}) => {
   const confirmInput = useInput("");
   const logIn = useLogIn();
   const [loading, setLoading] = useState(false);
-  
   const [confirmSecretMutation] = useMutation(CONFIRM_SECRET, {
     variables: {
       secret: confirmInput.value,
@@ -38,7 +37,7 @@ export default ({navigation}) => {
         data: { confirmSecret }
       } = await confirmSecretMutation();
       if (confirmSecret !== "" || confirmSecret !== false) {
-        logIn(confirmSecret)
+        logIn(confirmSecret);
       } else {
         Alert.alert("Wrong secret!")
       }
