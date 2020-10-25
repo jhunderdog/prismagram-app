@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Alert } from "react-native";
 import { useMutation } from "react-apollo-hooks";
-import * as Facebook from 'expo-facebook'
+import * as Facebook from "expo-facebook";
 import AuthButton from "../../components/AuthButton";
-import AuthInput from "../../components/AuthInput"
+import AuthInput from "../../components/AuthInput";
 import useInput from "../../hooks/useInput";
 import { LOG_IN, CREATE_ACCOUNT } from "./AuthQueries";
+import * as Google from "expo-google-app-auth";
 
-Facebook.initializeAsync({appId:"413348259656545"})
 
 const View = styled.View`
   justify-content: center;
@@ -25,13 +25,17 @@ const FBContainer = styled.View`
   border-style: solid;
 `;
 
-export default ({navigation}) => {
+const GoogleContainer = styled.View`
+  margin-top: 20px;
+`;
+
+export default ({ navigation }) => {
   const fNameInput = useInput("");
   const lNameInput = useInput("");
   const emailInput = useInput(navigation.getParam("email", ""));
   const usernameInput = useInput("");
   const [loading, setLoading] = useState(false);
-  const [createAccountMutation] = useMutation(CREATE_ACCOUNT, {
+  const createAccountMutation = useMutation(CREATE_ACCOUNT, {
     variables: {
       username: usernameInput.value,
       email: emailInput.value,
@@ -44,15 +48,14 @@ export default ({navigation}) => {
     const { value: fName } = fNameInput;
     const { value: lName } = lNameInput;
     const { value: username } = usernameInput;
-
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!emailRegex.test(email)) {
       return Alert.alert("That email is invalid");
     }
-    if (fName === ""){
+    if (fName === "") {
       return Alert.alert("I need your name");
     }
-    if (username === ""){
+    if (username === "") {
       return Alert.alert("Invalid username");
     }
     try {
@@ -63,35 +66,72 @@ export default ({navigation}) => {
       if (createAccount) {
         Alert.alert("Account created", "Log in now!");
         navigation.navigate("Login", { email });
-        }
-      } catch (e) {
-        console.log(e);
-        Alert.alert("User name taken.", "Log in instead");
-        navigation.navigate("Login", { email });
+      }
+    } catch (e) {
+      console.log(e);
+      Alert.alert("Username taken.", "Log in instead");
+      navigation.navigate("Login", { email });
     } finally {
       setLoading(false);
     }
   };
+  const updateFormData = (email, firstName, lastName) => {
+    emailInput.setValue(email);
+    fNameInput.setValue(firstName);
+    lNameInput.setValue(lastName);
+    const [username] = email.split("@");
+    usernameInput.setValue(username);
+  };
+
   const fbLogin = async () => {
     try {
       const { type, token } = await Facebook.logInWithReadPermissionsAsync(
         "413348259656545",
         {
-          permissions: ["public_profile"]
+          permissions: ["public_profile", "email"]
         }
       );
-      if (type === "success"){
+      if (type === "success") {
         const response = await fetch(
-          `https://graph.facebook.com/me?access_token=${token}`
+          `https://graph.facebook.com/me?access_token=${token}&fields=id,last_name,first_name,email`
         );
-        Alert.alert("Logged in!", `Hi ${(await response.json()).name}!`);
+        const { email, first_name, last_name } = await response.json();
+        updateFormData(email, first_name, last_name);
+        setLoading(false);
       } else {
-
+        // type === 'cancel'
       }
-    } catch ({message}) {
+    } catch ({ message }) {
       alert(`Facebook Login Error: ${message}`);
     }
   };
+
+  const googleLogin = async () => {
+    const GOOGLE_ID = 
+    "389330663369-9meul0pa4rjtrlijsliicoep1h10br43.apps.googleusercontent.com";
+    try {
+      setLoading(true);
+      const result = await Google.logInAsync({
+        iosClientId: GOOGLE_ID,
+        scopes: ["profile", "email"]
+      });
+      if (result.type === "success"){
+        const user = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+          headers: { Authorization: `Bearer ${result.accessToken}`}
+        });
+        const { email, family_name, given_name } = await user.json();
+        console.log(email, family_name, given_name);
+        updateFormData(email, given_name, family_name);
+      } else {
+        return { cancelled: true};
+      } 
+    } catch (e){
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dimiss}>
       <View>
@@ -127,6 +167,14 @@ export default ({navigation}) => {
             text="Connect Facebook"
           />
         </FBContainer>
+        <GoogleContainer>
+          <AuthButton
+            bgColor={"#EE1922"}
+            loading={false}
+            onPress={googleLogin}
+            text="Connect Google"
+            />
+        </GoogleContainer>
       </View>
     </TouchableWithoutFeedback>
   );
