@@ -34,7 +34,27 @@ const IconContainer = styled.View`
   margin-right:10px;
 `;
 
-const Post = ({user, location, files = []}) => {
+const InfoContainer = styled.View`
+  padding: 10px;
+`;
+
+const Caption = styled.Text`
+  margin: 3px 0px;
+`;
+
+const CommentCount = styled.Text`
+  opacity:0.5;
+  font-size:13px;
+`;
+
+const Post = ({
+  user, 
+  location, 
+  files = [],
+  likeCount,
+  caption,
+  comments = []
+}) => {
     return (
         <Container>
             <Header>
@@ -63,6 +83,7 @@ const Post = ({user, location, files = []}) => {
                   />
               ))}
             </Swiper>
+            <InfoContainer>
             <IconsContainer>
               <Touchable>
                 <IconContainer>
@@ -79,12 +100,22 @@ const Post = ({user, location, files = []}) => {
                   <Ionicons
                     size={28}
                     name={
-                      Platform.OS === "ios" ? "ios-message-empty" : "md-message-empty"
+                      Platform.OS === "ios" ? "ios-text" : "md-text"
                     }
                   />
                 </IconContainer>
               </Touchable>
             </IconsContainer>
+            <Touchable>
+              <Bold>{likeCount === 1 ? "1 like" : `${likeCount} likes`}</Bold>
+            </Touchable>
+            <Caption>
+              <Bold>{user.username}</Bold> {caption}
+            </Caption>
+            <Touchable>
+              <CommentCount>See all {comments.length} comments</CommentCount>
+            </Touchable>
+            </InfoContainer>
         </Container>
     );
 };
