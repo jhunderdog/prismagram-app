@@ -21,25 +21,26 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const preLoad = async () => {
     try {
-      console.log(loaded);
-      await Font.loadAsync(Ionicons.font);
+      await Font.loadAsync({
+        ...Ionicons.font
+      });
       await Asset.loadAsync([require("./assets/instagram.png")]);
       const cache = new InMemoryCache();
       await persistCache({
         cache,
-        storage: AsyncStorage,
+        storage: AsyncStorage
       });
       const client = new ApolloClient({
         cache,
         request: async operation => {
           const token = await AsyncStorage.getItem("jwt");
           return operation.setContext({
-            headers: { Authorization : `Bearer ${token}`}
+            headers: { Authorization: `Bearer ${token}` }
           });
         },
-        ...apolloClientOptions,
+        ...apolloClientOptions
       });
-      const isLoggedIn = await AsyncStorage.getItem("isLoggeddIn");
+      const isLoggedIn = await AsyncStorage.getItem("isLoggedIn");
       if (!isLoggedIn || isLoggedIn === "false") {
         setIsLoggedIn(false);
       } else {

@@ -43,9 +43,7 @@ export default createBottomTabNavigator(
       }
     },
     Search: {
-      screen: stackFactory(Search, {
-        title: "Search"
-      }),
+      screen: stackFactory(Search),
       navigationOptions: {
         tabBarIcon: ({ focused }) => (
           <NavIcon
@@ -65,9 +63,10 @@ export default createBottomTabNavigator(
             focused={focused}
             size={32}
             name={
-              Platform.OS === "ios" 
-              ? "ios-add-circle-outline" 
-              : "md-add-circle-outline"}
+              Platform.OS === "ios"
+                ? "ios-add-circle-outline"
+                : "md-add-circle-outline"
+            }
           />
         )
       }
@@ -108,6 +107,7 @@ export default createBottomTabNavigator(
     }
   },
   {
+    initialRouteName: "Search",
     tabBarOptions: {
       showLabel: false,
       style: {
