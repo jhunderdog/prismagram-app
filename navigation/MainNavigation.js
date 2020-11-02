@@ -16,9 +16,7 @@ const MainNavigation = createStackNavigator(
       headerStyle: {
         ...stackStyles
       }
-    }
-  },
-  {
+    },
     headerMode: "none",
     mode: "modal"
   }

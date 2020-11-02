@@ -10,10 +10,10 @@ const AuthNavigation = createStackNavigator(
     AuthHome,
     Signup,
     Login,
-    Confirm,
+    Confirm
   },
   {
-    headerMode: "none",
+    headerMode: "none"
   }
 );
 

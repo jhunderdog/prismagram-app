@@ -8,8 +8,7 @@ import AuthButton from "../../components/AuthButton";
 import AuthInput from "../../components/AuthInput";
 import useInput from "../../hooks/useInput";
 import { LOG_IN, CREATE_ACCOUNT } from "./AuthQueries";
-import * as Google from "expo-google-app-auth";
-
+import { Google } from "expo";
 
 const View = styled.View`
   justify-content: center;
@@ -43,7 +42,7 @@ export default ({ navigation }) => {
       lastName: lNameInput.value
     }
   });
-  const handleSignup = async () => {
+  const handleSingup = async () => {
     const { value: email } = emailInput;
     const { value: fName } = fNameInput;
     const { value: lName } = lNameInput;
@@ -75,18 +74,11 @@ export default ({ navigation }) => {
       setLoading(false);
     }
   };
-  const updateFormData = (email, firstName, lastName) => {
-    emailInput.setValue(email);
-    fNameInput.setValue(firstName);
-    lNameInput.setValue(lastName);
-    const [username] = email.split("@");
-    usernameInput.setValue(username);
-  };
-
   const fbLogin = async () => {
     try {
+      setLoading(true);
       const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-        "413348259656545",
+        "2437846576444335",
         {
           permissions: ["public_profile", "email"]
         }
@@ -105,37 +97,41 @@ export default ({ navigation }) => {
       alert(`Facebook Login Error: ${message}`);
     }
   };
-
   const googleLogin = async () => {
-    const GOOGLE_ID = 
-    "389330663369-9meul0pa4rjtrlijsliicoep1h10br43.apps.googleusercontent.com";
+    const GOOGLE_ID =
+      "197992685258-6u0isnpjsrs7dc1il65ec5tn7ts7vm73.apps.googleusercontent.com";
     try {
       setLoading(true);
       const result = await Google.logInAsync({
         iosClientId: GOOGLE_ID,
         scopes: ["profile", "email"]
       });
-      if (result.type === "success"){
+      if (result.type === "success") {
         const user = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-          headers: { Authorization: `Bearer ${result.accessToken}`}
+          headers: { Authorization: `Bearer ${result.accessToken}` }
         });
         const { email, family_name, given_name } = await user.json();
-        console.log(email, family_name, given_name);
         updateFormData(email, given_name, family_name);
       } else {
-        return { cancelled: true};
-      } 
-    } catch (e){
+        return { cancelled: true };
+      }
+    } catch (e) {
       console.log(e);
     } finally {
       setLoading(false);
     }
   };
-  
+  const updateFormData = (email, firstName, lastName) => {
+    emailInput.setValue(email);
+    fNameInput.setValue(firstName);
+    lNameInput.setValue(lastName);
+    const [username] = email.split("@");
+    usernameInput.setValue(username);
+  };
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dimiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View>
-        <AuthInput 
+        <AuthInput
           {...fNameInput}
           placeholder="First name"
           autoCapitalize="words"
@@ -158,7 +154,7 @@ export default ({ navigation }) => {
           returnKeyType="send"
           autoCorrect={false}
         />
-        <AuthButton loading={loading} onPress={handleSignup} text="Sign up"/>
+        <AuthButton loading={loading} onPress={handleSingup} text="Sign up" />
         <FBContainer>
           <AuthButton
             bgColor={"#2D4DA7"}
@@ -173,7 +169,7 @@ export default ({ navigation }) => {
             loading={false}
             onPress={googleLogin}
             text="Connect Google"
-            />
+          />
         </GoogleContainer>
       </View>
     </TouchableWithoutFeedback>

@@ -49,18 +49,18 @@ export default () => {
     }
   };
   return (
-  <ScrollView 
-  refreshControl={
-    <RefreshControl refreshing={refreshing} onRefresh={refresh}/>
-  }
-  >
-    {loading ? (
-      <Loader/>
-    ) : (
-      data &&
-      data.seeFeed &&
-      data.seeFeed.map(post => <Post key={post.id} {...post}/>)
-    )}
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={refresh} />
+      }
+    >
+      {loading ? (
+        <Loader />
+      ) : (
+        data &&
+        data.seeFeed &&
+        data.seeFeed.map(post => <Post key={post.id} {...post} />)
+      )}
     </ScrollView>
-    );
+  );
 };

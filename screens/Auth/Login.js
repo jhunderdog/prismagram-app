@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
 import AuthButton from "../../components/AuthButton";
-import AuthInput from "../../components/AuthInput"
+import AuthInput from "../../components/AuthInput";
 import useInput from "../../hooks/useInput";
 import { Alert } from "react-native";
 import { useMutation } from "react-apollo-hooks";
@@ -14,10 +14,10 @@ const View = styled.View`
   flex: 1;
 `;
 
-export default ({navigation}) => {
+export default ({ navigation }) => {
   const emailInput = useInput(navigation.getParam("email", ""));
   const [loading, setLoading] = useState(false);
-  const [requestSecretMutation] = useMutation(LOG_IN, {
+  const requestSecretMutation = useMutation(LOG_IN, {
     variables: {
       email: emailInput.value
     }
@@ -44,7 +44,7 @@ export default ({navigation}) => {
       } else {
         Alert.alert("Account not found");
         navigation.navigate("Signup", { email: value });
-      } 
+      }
     } catch (e) {
       console.log(e);
       Alert.alert("Can't log in now");
@@ -53,17 +53,17 @@ export default ({navigation}) => {
     }
   };
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dimiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View>
-        <AuthInput 
-          {...emailInput} 
-          placeholder="Email" 
+        <AuthInput
+          {...emailInput}
+          placeholder="Email"
           keyboardType="email-address"
           returnKeyType="send"
-          onSumbitEditing={handleLogin}
+          onSubmitEditing={handleLogin}
           autoCorrect={false}
         />
-        <AuthButton loading={loading} onPress={handleLogin} text="Log In"/>
+        <AuthButton loading={loading} onPress={handleLogin} text="Log In" />
       </View>
     </TouchableWithoutFeedback>
   );

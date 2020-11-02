@@ -18,16 +18,17 @@ const Touchable = styled.TouchableOpacity``;
 
 const LoginLink = styled.View``;
 const LoginLinkText = styled.Text`
-    color: ${props => props.theme.blueColor};
-    margin-top:20px;
-    font-weight:600;
+  color: ${props => props.theme.blueColor};
+  margin-top: 20px;
+  font-weight: 600;
 `;
+
 export default ({ navigation }) => (
   <View>
-    <Image resizeMode={"contain"} source={require("../../assets/instagram.png")}/>
+    <Image resizeMode={"contain"} source={require("../../assets/instagram.png")} />
     <AuthButton
       text={"Create New Account"}
-      onPress={()=> navigation.navigate("Signup")}
+      onPress={() => navigation.navigate("Signup")}
     />
     <Touchable onPress={() => navigation.navigate("Login")}>
       <LoginLink>

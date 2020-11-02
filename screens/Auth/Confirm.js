@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
 import AuthButton from "../../components/AuthButton";
-import AuthInput from "../../components/AuthInput"
+import AuthInput from "../../components/AuthInput";
 import useInput from "../../hooks/useInput";
 import { Alert } from "react-native";
 import { useMutation } from "react-apollo-hooks";
 import { LOG_IN, CONFIRM_SECRET } from "./AuthQueries";
 import { useLogIn } from "../../AuthContext";
-
 
 const View = styled.View`
   justify-content: center;
@@ -16,14 +15,14 @@ const View = styled.View`
   flex: 1;
 `;
 
-export default ({navigation}) => {
+export default ({ navigation }) => {
   const confirmInput = useInput("");
   const logIn = useLogIn();
   const [loading, setLoading] = useState(false);
-  const [confirmSecretMutation] = useMutation(CONFIRM_SECRET, {
+  const confirmSecretMutation = useMutation(CONFIRM_SECRET, {
     variables: {
       secret: confirmInput.value,
-      email: navigation.getParam('email')
+      email: navigation.getParam("email")
     }
   });
   const handleConfirm = async () => {
@@ -39,7 +38,7 @@ export default ({navigation}) => {
       if (confirmSecret !== "" || confirmSecret !== false) {
         logIn(confirmSecret);
       } else {
-        Alert.alert("Wrong secret!")
+        Alert.alert("Wrong secret!");
       }
     } catch (e) {
       console.log(e);
@@ -49,16 +48,16 @@ export default ({navigation}) => {
     }
   };
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dimiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View>
-        <AuthInput 
-          {...confirmInput} 
-          placeholder="Secret" 
+        <AuthInput
+          {...confirmInput}
+          placeholder="Secret"
           returnKeyType="send"
-          onSumbitEditing={handleConfirm}
+          onSubmitEditing={handleConfirm}
           autoCorrect={false}
         />
-        <AuthButton loading={loading} onPress={handleConfirm} text="Confirm"/>
+        <AuthButton loading={loading} onPress={handleConfirm} text="Confirm" />
       </View>
     </TouchableWithoutFeedback>
   );
