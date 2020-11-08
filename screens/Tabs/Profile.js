@@ -19,6 +19,7 @@ export default ({navigation}) => {
   const { loading, data } = useQuery(ME);
   return (
     <ScrollView>
+      {console.log(data.me)}
       {loading ? <Loader/> : data && data.me && <UserProfile {...data.me}/>}
     </ScrollView>
   );
