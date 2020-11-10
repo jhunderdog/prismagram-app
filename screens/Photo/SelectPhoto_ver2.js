@@ -24,7 +24,7 @@ export default () => {
       const [firstPhoto] = assets;
       setSelected(firstPhoto);
       setAllPhotos(assets);
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     } finally {
       setLoading(false);
@@ -33,7 +33,7 @@ export default () => {
   const askPermission = async () => {
     try {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      if (status === "granted"){
+      if (status === "granted") {
         setHasPermission(true);
         getPhotos();
       }
@@ -48,16 +48,16 @@ export default () => {
   return (
     <View>
       {loading ? (
-        <Loader/> 
+        <Loader />
       ) : (
         <View>
           {hasPermission ? (
             <Image
-            style={{ width: 100, height: 100}}
-            source ={{ uri: selected.uri}}
+              style={{ width: 100, height: 100 }}
+              source={{ uri: selected.uri }}
             />
-          ):null}
-          </View>
+          ) : null}
+        </View>
       )}
     </View>
   );
