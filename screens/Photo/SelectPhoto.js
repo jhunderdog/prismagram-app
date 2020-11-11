@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import * as Permissions from "expo-permissions";
-import { Image } from "react-native";
+import { Image, ScrollView, TouchableOpacity } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import styled from "styled-components";
 import Loader from "../../components/Loader";
+import constants from "../../constants";
 
 const View = styled.View`
-  justify-content: center;
-  align-items: center;
   flex: 1;
 `;
 
@@ -18,6 +17,9 @@ export default () => {
   const [hasPermission, setHasPermission] = useState(false);
   const [selected, setSelected] = useState();
   const [allPhotos, setAllPhotos] = useState();
+  const changeSelected = photo => {
+    setSelected(photo);
+  };
   const getPhotos = async () => {
     try {
       const { assets } = await MediaLibrary.getAssetsAsync();
@@ -39,7 +41,7 @@ export default () => {
       }
     } catch (e) {
       console.log(e);
-      hasPermission(false);
+      setHasPermission(false);
     }
   };
   useEffect(() => {
@@ -52,10 +54,29 @@ export default () => {
       ) : (
         <View>
           {hasPermission ? (
+            <>
             <Image
-            style={{ width: 100, height: 100}}
-            source ={{ uri: selected.uri}}
+            style={{width: constants.width, height: constants.height /2 }}
+            source={{ uri: selected.uri}}
             />
+            <ScrollView contentContainerStyle={{ flexDirection: "row" }}>
+              {allPhotos.map(photo => (
+                <TouchableOpacity
+                  key={photo.id}
+                  onPress={() => changeSelected(photo)}
+                >
+                <Image
+                  source={{uri: photo.uri}}
+                  style={{
+                    width: constants.width / 3,
+                    height: constants.height / 6
+                  }}
+                  />  
+                </TouchableOpacity>
+              ))}
+
+            </ScrollView>
+            </>
           ):null}
           </View>
       )}
